@@ -50,3 +50,17 @@ def plt_filtration(data,filtration,r,circle=False,axes=None):
             alpha=1, ax=axes)
 
     return axes
+
+
+def get_landscape(VRcomplex, res, dim=1):
+	ls = gd.representations.Landscape(resolution=res)
+	return ls.fit_transform([VRcomplex.persistence_intervals_in_dimension(dim)])
+
+
+def get_silhouette(VRcomplex, res, wgt="power", dim=1):
+	if wgt == "power":
+		weight_ = lambda x: np.power(x[1] - x[0], 1)
+	else:
+		weight_ = wgt
+	sh = gd.representations.Silhouette(resolution=res, weight=weight_)
+	return sh.fit_transform([VRcomplex.persistence_intervals_in_dimension(dim)])
