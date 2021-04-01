@@ -2,7 +2,11 @@
 
 import numpy as np
 import gudhi as gd
-import gudhi.representations
+from gudhi.representations import DiagramSelector, DiagramScaler,\
+	Clamping, Landscape, Silhouette, BottleneckDistance
+
+from sklearn.preprocessing import MinMaxScaler
+
 import networkx as nx
 import itertools
 import matplotlib.pyplot as plt
@@ -52,8 +56,9 @@ def plt_filtration(data,filtration,r,circle=False,axes=None):
     return axes
 
 
+########## OLD FUNCTIONS #
 def get_landscape(VRcomplex, res, dim=1):
-	ls = gd.representations.Landscape(resolution=res)
+	ls = Landscape(resolution=res)
 	return ls.fit_transform([VRcomplex.persistence_intervals_in_dimension(dim)])
 
 
@@ -64,3 +69,28 @@ def get_silhouette(VRcomplex, res, wgt="power", dim=1):
 		weight_ = wgt
 	sh = gd.representations.Silhouette(resolution=res, weight=weight_)
 	return sh.fit_transform([VRcomplex.persistence_intervals_in_dimension(dim)])
+# OLD FUNCTIONS ##########
+
+
+def get_landscape_new(VRcomplex, res, dim=1):
+	ls = Landscape(resolution=res)
+	diags = [VRcomplex.persistence_intervals_in_dimension(dim)]
+	diags = DiagramSelector(use=True, point_type="finite").fit_transform(diags)
+	diags = DiagramScaler(use=True, scalers=[([0,1], MinMaxScaler())]).fit_transform(diags)
+	return ls.fit_transform(diags)
+
+
+def pow(n):
+	return lambda x: np.power(x[1]-x[0],n)
+
+
+def get_silhouette_new(VRcomplex, res, wgt="power", dim=1):
+	if wgt == "power":
+		weight_ = pow(2)
+	else:
+		weight_ = wgt
+	diags = [VRcomplex.persistence_intervals_in_dimension(dim)]
+	diags = DiagramSelector(use=True, point_type="finite").fit_transform(diags)
+	diags = DiagramScaler(use=True, scalers=[([0,1], MinMaxScaler())]).fit_transform(diags)
+	sh = Silhouette(resolution=res, weight=weight_)
+	return sh.fit_transform(diags)
