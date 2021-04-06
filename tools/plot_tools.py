@@ -23,6 +23,7 @@ def get_axes(L, max_col=3, fig_frame=(5,4), res=100):
 
     return fig, axes
 
+
 def single_scatter_fig(data, color='tab:blue', fig_frame=(5,4), res=100, s=10, alpha=1.0, priority=1, chunk=None):
     fig, axes = plt.subplots(1, 1, figsize=(1 * fig_frame[0], 1 * fig_frame[1]), dpi=res)
     if chunk:

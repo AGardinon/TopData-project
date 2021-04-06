@@ -17,6 +17,11 @@ def get_skeleton(data,max_edge_length):
                           max_edge_length = max_edge_length)
 
 
+def get_skeleton_from_mtrx(matrix,max_edge_length):
+    return gd.RipsComplex(distance_matrix = matrix,
+                          max_edge_length = max_edge_length)
+
+
 def get_VRcomplex(skeleton,max_dim):
     return skeleton.create_simplex_tree(max_dimension = max_dim)
 
@@ -34,7 +39,7 @@ def get_filtration(data,VRcomplex,r):
     return [tuple(i) for i in filtration_]
 
 
-def plt_filtration(data,filtration,r,circle=False,axes=None):
+def plt_filtration(data,filtration,r,dotsize=50,circle=False,axes=None):
     Npoints = len(data)
     G = nx.Graph()
     G.add_nodes_from(np.arange(Npoints))
@@ -49,7 +54,7 @@ def plt_filtration(data,filtration,r,circle=False,axes=None):
 	    	axes.set_aspect('equal', adjustable='datalim')
     
     nx.draw(G, pos=data,
-            node_size=50, node_color='tab:green',
+            node_size=dotsize, node_color='tab:green',
             width=1.0, edge_color='tab:blue',
             alpha=1, ax=axes)
 
